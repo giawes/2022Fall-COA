@@ -1,0 +1,107 @@
+#第二次作业
+
+package cpu.alu;
+
+import util.DataType;
+
+/**
+ * Arithmetic Logic Unit
+ * ALU封装类
+ */
+public class ALU {
+
+    /**
+     * 返回两个二进制整数的和
+     * dest + src
+     *
+     * @param src  32-bits
+     * @param dest 32-bits
+     * @return 32-bits
+     */
+    public DataType add(DataType src, DataType dest) {
+        // TODO
+        String o1=src.toString();
+        String o2 = dest.toString();
+        String res = "";
+        char carry='0';
+        for (int i = 31; i >= 0; i--) {
+            String temp = fullAdder(o1.charAt(i), o2.charAt(i), carry);
+            carry = temp.charAt(0);
+            res = temp.charAt(1) + res;
+        }
+        return new DataType(res);
+    }
+
+    private String fullAdder(char x, char y, char c) {
+        int bit = (x - '0') ^ (y - '0') ^ (c - '0');  //三位异或
+        int carry = ((x - '0') & (y - '0')) | ((y - '0') & (c - '0')) | ((x - '0') & (c - '0'));  //有两位为1则产生进位
+        return "" + carry + bit;  //第一个空串让后面的加法都变为字符串加法
+    }
+
+    /**
+     * 返回两个二进制整数的差
+     * dest - src
+     *
+     * @param src  32-bits
+     * @param dest 32-bits
+     * @return 32-bits
+     */
+    public DataType sub(DataType src, DataType dest) {
+        // TODO
+        String o1 = dest.toString();
+        String srcNew=src.toString();
+        char[] a2 = new char[32];
+        for (int i = 0; i < o1.length(); i++) {
+            if (srcNew.charAt(i) =='1'){
+                a2[i]='0';
+            }else {
+                a2[i]='1';
+            }
+        }
+        String o2=new String(a2);
+        String res = "";
+        char carry='1';
+        for (int i = 31; i >= 0; i--) {
+            String temp = fullAdder(o1.charAt(i), o2.charAt(i), carry);
+            carry = temp.charAt(0);
+            res = temp.charAt(1) + res;
+        }
+        return new DataType(res);
+        /**String o1 = dest.toString();
+        String o2=src.toString();
+        char[] a1=new char[32];
+        char[] a2 = new char[32];
+        char[] tmp=new char[32];
+        if (o2.charAt(0)=='1') {//src为负
+
+        }else {//src为正
+            for (int i = 0; i < o1.length(); i++) {
+                a1[i] = o1.charAt(i);
+                if (o2.charAt(i) =='1'){
+                    a2[i]='0';
+                }else {
+                    a2[i]='1';
+                }
+            }
+            int c=1;
+            for (int i = 31; i >= 0; i--) {
+                int temp = a1[i] - 48 + a2[i] - 48 + c;
+                if (temp >= 2) {
+                    tmp[i] = (char)(temp + 48 - 2);
+                    c = 1;
+                } else {
+                    tmp[i] = (char) (temp + 48);
+                    c = 0;
+                }
+            }
+        }
+        /*char[] tmp=new char[32];
+        for (int i = 31; i >= 0; i--){
+            f[i]=a1[i]^a2[i]^c[i];
+            if(i!=0){
+                c[i-1]=a1[i]*c[i]+a2[i]*c[i]+a1[i]*a2[i];
+            }
+        }
+        String answer=new String(tmp);*/
+    }
+}
